@@ -1,0 +1,3 @@
+Pyrogram
+asyncio
+TgCrypto==1.2.5
