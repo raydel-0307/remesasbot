@@ -33,6 +33,7 @@ from threading import Thread
 
 import asyncio
 from functools import partial
+import socket
 
 
 def get_peer_type_new(peer_id: int) -> str:
@@ -361,10 +362,24 @@ async def handle_http_request(reader, writer):
 
 
 async def web_server():
-    server = await asyncio.start_server(handle_http_request, "0.0.0.0", 8080)
-    print(f"Servidor web iniciado en http://0.0.0.0:8080")
-    async with server:
-        await server.serve_forever()
+    try:
+        server = await asyncio.start_server(
+            handle_http_request, "0.0.0.0", 8080, reuse_port=True
+        )
+        print(f"✅ Servidor web iniciado en http://0.0.0.0:8080")
+
+        # Verificación adicional
+        sock = server.sockets[0]
+        print(f"Socket bound to: {sock.getsockname()}")
+
+        async with server:
+            await server.serve_forever()
+
+    except Exception as e:
+        print(f"🚨 Error en servidor web: {e}")
+        # Reintentar después de 5 segundos
+        await asyncio.sleep(5)
+        await web_server()
 
 
 def create_web():
