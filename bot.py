@@ -31,10 +31,6 @@ from pyrogram import utils
 
 from threading import Thread
 
-import asyncio
-from functools import partial
-import socket
-
 
 def get_peer_type_new(peer_id: int) -> str:
     peer_id_str = str(peer_id)
@@ -298,7 +294,7 @@ async def send_msg(bot):
     while True:
         try:
             ahora = datetime.now()
-            objetivo = datetime.combine(ahora.date(), time(5, 0))
+            objetivo = datetime.combine(ahora.date(), time(3, 0))
 
             if objetivo <= ahora:
                 objetivo += timedelta(days=1)
@@ -345,52 +341,9 @@ def send_msg_task():
     asyncio.run(send_msg(bot))
 
 
-async def handle_http_request(reader, writer):
-    request = (await reader.read(1024)).decode()
-
-    response = """
-    HTTP/1.1 200 OK\r
-    Content-Type: text/html\r
-    \r
-    <h1>Bot en funcionamiento</h1>
-    <p>El bot de Telegram está activo.</p>
-    """
-
-    writer.write(response.encode())
-    await writer.drain()
-    writer.close()
-
-
-async def web_server():
-    try:
-        server = await asyncio.start_server(
-            handle_http_request, "0.0.0.0", 8080, reuse_port=True
-        )
-        print(f"✅ Servidor web iniciado en http://0.0.0.0:8080")
-
-        # Verificación adicional
-        sock = server.sockets[0]
-        print(f"Socket bound to: {sock.getsockname()}")
-
-        async with server:
-            await server.serve_forever()
-
-    except Exception as e:
-        print(f"🚨 Error en servidor web: {e}")
-        # Reintentar después de 5 segundos
-        await asyncio.sleep(5)
-        await web_server()
-
-
-def create_web():
-    asyncio.run(web_server())
-
-
 print("...INICIANDO...")
 bot.start()
 task = threading.Thread(target=send_msg_task)
 task.start()
-task2 = threading.Thread(target=create_web)
-task2.start()
 print("<BOT STARTED>")
 bot.loop.run_forever()

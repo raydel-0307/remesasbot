@@ -1,6 +1,6 @@
 api_id = 12168140
 api_hash = "3504ce0eddb7dff4288d05d5e3dc5e4c"
-bot_token = "7561067400:AAG-8BIBcQA62p4D1QzphMMaxTsgp-Qn1KU"
+bot_token = "7561067400:AAGmQ2CHM2V9-Y8SmN9eyfDpfJKJ75VDbO4"
 owners = ["raydel0307", "yander1996", "AnitaSSP", "OnlyBigBoss"]
 settings = {
     "-1002631578411": {
